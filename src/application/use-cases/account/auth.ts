@@ -4,7 +4,7 @@ import {
   type CodeInput,
   type EmailInput,
 } from '@/application/dto/account';
-import type { AuthErrorCode, AuthGateway } from '@/application/ports/account';
+import type { AuthErrorCode, AuthGateway, LocalCache } from '@/application/ports/account';
 import { err, ok, type Result } from '@/domain/result';
 
 export const makeSendLoginCode =
@@ -29,6 +29,8 @@ export const makeVerifyLoginCode =
   };
 
 export const makeSignOut =
-  ({ auth }: { auth: AuthGateway }) =>
-  (): Promise<void> =>
-    auth.signOut();
+  ({ auth, caches }: { auth: AuthGateway; caches: LocalCache[] }) =>
+  async (): Promise<void> => {
+    await Promise.allSettled(caches.map((cache) => cache.clear()));
+    await auth.signOut();
+  };

@@ -1,9 +1,11 @@
 import { NativeTabs } from 'expo-router/native-tabs';
 
+import { useLiveAccount } from '@/features/account';
 import { useTheme } from '@/shared/ui/theme';
 
 export default function TabsLayout() {
   const { colors } = useTheme();
+  useLiveAccount();
 
   return (
     <NativeTabs

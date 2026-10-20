@@ -1,17 +1,24 @@
 import { SymbolView } from 'expo-symbols';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { formatPoints } from '@/domain/points/points';
 import { useCustomer } from '@/features/account';
+import { Button } from '@/shared/ui/button';
 import { GlassCard } from '@/shared/ui/glass-card';
 import { Text } from '@/shared/ui/text';
 import { radius, spacing, useTheme } from '@/shared/ui/theme';
+
+import { useCard, useFullBrightness } from '../hooks';
+import { CardCode } from './card-code';
 
 export function CardScreen() {
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const customer = useCustomer();
+  const card = useCard();
+  const ready = card.data?.kind === 'ready' ? card.data : null;
+  useFullBrightness(!!ready);
 
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
@@ -47,21 +54,45 @@ export function CardScreen() {
             />
           </View>
 
-          <View style={[styles.code, { backgroundColor: colors.surfaceStrong }]}>
-            <SymbolView
-              name={{ ios: 'qrcode', android: 'qr_code_2' }}
-              size={120}
-              tintColor={colors.textMuted}
-            />
-          </View>
-
-          <Text variant="caption" muted style={styles.center}>
-            Kod do zeskanowania przy kasie pojawi się tutaj już wkrótce.
-          </Text>
+          {ready ? (
+            <CardCode card={ready.card} />
+          ) : (
+            <View style={[styles.code, { backgroundColor: colors.surfaceStrong }]}>
+              {card.isPending ? (
+                <ActivityIndicator color={colors.ink} />
+              ) : (
+                <View style={styles.codeMessage}>
+                  <SymbolView
+                    name={{ ios: 'wifi.exclamationmark', android: 'wifi_off' }}
+                    size={40}
+                    tintColor={colors.textMuted}
+                  />
+                  <Text muted style={styles.center}>
+                    {card.data?.kind === 'missing'
+                      ? 'Nie widzimy Twojej karty. Spróbuj za chwilę.'
+                      : 'Połącz się z internetem, żeby pobrać kartę. Potem zadziała też bez sieci.'}
+                  </Text>
+                  <Button
+                    variant="secondary"
+                    title="Spróbuj ponownie"
+                    onPress={() => card.refetch()}
+                  />
+                </View>
+              )}
+            </View>
+          )}
         </GlassCard>
 
         <GlassCard>
-          <Text variant="body">Pokaż kartę przy kasie, a kłoski dopiszą się same.</Text>
+          <Text variant="body">
+            Pokaż kod przy kasie, a kłoski dopiszą się same. Kod zmienia się co pół minuty, więc
+            zrzut ekranu nie zadziała.
+          </Text>
+          {ready?.offline ? (
+            <Text variant="caption" muted style={styles.offline}>
+              Jesteś bez internetu. Kod działa, a saldo odświeży się po połączeniu.
+            </Text>
+          ) : null}
         </GlassCard>
       </ScrollView>
     </View>
@@ -117,7 +148,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  codeMessage: {
+    alignItems: 'center',
+    gap: spacing.md,
+    padding: spacing.lg,
+  },
   center: {
     textAlign: 'center',
+  },
+  offline: {
+    marginTop: spacing.sm,
   },
 });

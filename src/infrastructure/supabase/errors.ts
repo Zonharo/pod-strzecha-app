@@ -3,7 +3,7 @@ import { err, ok, type Result } from '@/domain/result';
 
 type PostgrestLikeError = { code?: string; hint?: string | null; message?: string } | null;
 
-const isNetworkError = (error: { message?: string }): boolean =>
+export const isNetworkError = (error: { message?: string }): boolean =>
   /network request failed|fetch failed|timeout/i.test(error.message ?? '');
 
 export const toResult = (error: PostgrestLikeError): Result<void, DomainErrorCode> => {

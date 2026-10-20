@@ -4,11 +4,7 @@ import {
   type MarketingInput,
   type OnboardingInput,
 } from '@/application/dto/account';
-import type {
-  AuthGateway,
-  CustomerRepository,
-  ProgramRepository,
-} from '@/application/ports/account';
+import type { CustomerRepository, ProgramRepository } from '@/application/ports/account';
 import { accountStateOf, type AccountState } from '@/domain/customer/customer';
 import type { DomainErrorCode } from '@/domain/errors';
 import { err, ok, type Result } from '@/domain/result';
@@ -77,10 +73,10 @@ export const makeUpdateHomeStore =
   };
 
 export const makeDeleteAccount =
-  ({ customers, auth }: { customers: CustomerRepository; auth: AuthGateway }) =>
+  ({ customers, signOut }: { customers: CustomerRepository; signOut: () => Promise<void> }) =>
   async (): Promise<Result<void, AccountError>> => {
     const result = await customers.deleteAccount();
     if (!result.ok) return err(domainError(result.error));
-    await auth.signOut();
+    await signOut();
     return ok(undefined);
   };
