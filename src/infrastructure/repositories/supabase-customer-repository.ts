@@ -1,15 +1,19 @@
 import type { CustomerRepository } from '@/application/ports/account';
 import type { Customer } from '@/domain/customer/customer';
 import { err } from '@/domain/result';
+import type { JsonCache } from '@/infrastructure/storage/local-store';
 import type { SupabaseClient } from '@/infrastructure/supabase/client';
-import { toResult } from '@/infrastructure/supabase/errors';
+import { isNetworkError, toResult } from '@/infrastructure/supabase/errors';
 
 const currentUser = async (supabase: SupabaseClient) => {
   const { data } = await supabase.auth.getSession();
   return data.session?.user ?? null;
 };
 
-export const makeSupabaseCustomerRepository = (supabase: SupabaseClient): CustomerRepository => ({
+export const makeSupabaseCustomerRepository = (
+  supabase: SupabaseClient,
+  cache: JsonCache<Customer>,
+): CustomerRepository => ({
   async findMe() {
     const user = await currentUser(supabase);
     if (!user) return null;
@@ -18,7 +22,11 @@ export const makeSupabaseCustomerRepository = (supabase: SupabaseClient): Custom
       .select('*, home_store:stores(name)')
       .eq('id', user.id)
       .maybeSingle();
-    if (error) throw new Error(error.message);
+    if (error) {
+      const cached = isNetworkError(error) ? await cache.read() : null;
+      if (cached?.id === user.id) return cached;
+      throw new Error(error.message);
+    }
     if (!data) return null;
     const customer: Customer = {
       id: data.id,
@@ -37,6 +45,7 @@ export const makeSupabaseCustomerRepository = (supabase: SupabaseClient): Custom
       marketingEmail: data.marketing_email,
       status: data.status,
     };
+    await cache.write(customer);
     return customer;
   },
 

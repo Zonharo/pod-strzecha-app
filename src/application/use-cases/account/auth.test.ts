@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { fakeAuth } from '@/application/testing/fakes';
 import { err } from '@/domain/result';
 
-import { makeSendLoginCode, makeVerifyLoginCode } from './auth';
+import { makeSendLoginCode, makeSignOut, makeVerifyLoginCode } from './auth';
 
 describe('makeSendLoginCode', () => {
   it('normalizuje adres i wysyła kod', async () => {
@@ -46,5 +46,17 @@ describe('makeVerifyLoginCode', () => {
       err('invalid_code'),
     );
     expect(auth.verifyCode).not.toHaveBeenCalled();
+  });
+});
+
+describe('makeSignOut', () => {
+  it('czyści dane w telefonie przed wylogowaniem, nawet gdy jedna pamięć zawiedzie', async () => {
+    const auth = fakeAuth();
+    const order: string[] = [];
+    const ok = { clear: vi.fn(async () => void order.push('cache')) };
+    const broken = { clear: vi.fn(async () => Promise.reject(new Error('x'))) };
+    vi.mocked(auth.signOut).mockImplementation(async () => void order.push('auth'));
+    await makeSignOut({ auth, caches: [broken, ok] })();
+    expect(order).toEqual(['cache', 'auth']);
   });
 });

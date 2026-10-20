@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { aCustomer, fakeAuth, fakeCustomers, fakeProgram } from '@/application/testing/fakes';
+import { aCustomer, fakeCustomers, fakeProgram } from '@/application/testing/fakes';
 import { err } from '@/domain/result';
 
 import { makeCompleteOnboarding, makeDeleteAccount, makeGetAccountState } from './account';
@@ -85,18 +85,18 @@ describe('makeCompleteOnboarding', () => {
 describe('makeDeleteAccount', () => {
   it('usuwa konto i wylogowuje', async () => {
     const customers = fakeCustomers();
-    const auth = fakeAuth();
-    expect((await makeDeleteAccount({ customers, auth })()).ok).toBe(true);
-    expect(auth.signOut).toHaveBeenCalled();
+    const signOut = vi.fn(async () => undefined);
+    expect((await makeDeleteAccount({ customers, signOut })()).ok).toBe(true);
+    expect(signOut).toHaveBeenCalled();
   });
 
   it('nie wylogowuje, gdy usunięcie się nie udało', async () => {
     const customers = fakeCustomers();
     vi.mocked(customers.deleteAccount).mockResolvedValueOnce(err('network'));
-    const auth = fakeAuth();
-    expect(await makeDeleteAccount({ customers, auth })()).toEqual(
+    const signOut = vi.fn(async () => undefined);
+    expect(await makeDeleteAccount({ customers, signOut })()).toEqual(
       err({ kind: 'domain', code: 'network' }),
     );
-    expect(auth.signOut).not.toHaveBeenCalled();
+    expect(signOut).not.toHaveBeenCalled();
   });
 });

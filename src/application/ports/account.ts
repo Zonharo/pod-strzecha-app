@@ -12,6 +12,10 @@ export type AuthGateway = {
   signOut(): Promise<void>;
 };
 
+export type LocalCache = {
+  clear(): Promise<void>;
+};
+
 export type CompleteOnboardingCommand = {
   firstName: string;
   homeStoreId: string;
