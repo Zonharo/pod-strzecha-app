@@ -24,6 +24,7 @@ export const makeSupabaseProgramRepository = (
       pointsPerZloty: Number(data.points_per_zloty),
       pointsInactivityMonths: data.points_inactivity_months,
       rewardValidDays: data.reward_valid_days,
+      ratingWindowDays: data.rating_window_days,
     };
     await cache.write(settings);
     return settings;

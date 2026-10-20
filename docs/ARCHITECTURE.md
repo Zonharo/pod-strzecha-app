@@ -45,6 +45,15 @@ Warunek w Supabase: szablony **Magic Link** i **Confirm signup** muszą zawiera�
   Wylogowanie i usunięcie konta czyszczą obie pamięci.
 - Saldo i powiadomienia odświeżają się na żywo (Realtime na `customers` i `customer_notifications`).
 
+## Historia i oceny
+
+- Zakładka Historia: zakupy stronicowane po 20 (`purchases` z sklepem i oceną), odświeżane pociągnięciem w dół
+  i na żywo po każdym zakupie. Szczegóły pokazują pozycje paragonu, jeśli kasa je przesłała, i użyte kupony.
+- Ocena: 1–5 gwiazdek, tagi (pochwały przy 4–5, uwagi przy 1–3) i komentarz do 500 znaków, przez `rate_purchase`.
+  Można ją poprawiać do końca okna z `program_settings.rating_window_days`. Powiadomienie o kłoskach prowadzi
+  prosto do zakupu (`/history/<id>`).
+- Historia kłosków (`/history/points`) to księga `points_ledger` z opisem każdej pozycji.
+
 ## Kasa testowa
 
 Do czasu własnego POS-a zakupy wprowadza skrypt, który woła te same funkcje co przyszła kasa

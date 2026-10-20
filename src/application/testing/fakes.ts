@@ -15,6 +15,7 @@ export const settings: ProgramSettings = {
   pointsPerZloty: 1,
   pointsInactivityMonths: 12,
   rewardValidDays: 14,
+  ratingWindowDays: 7,
 };
 
 export const aCustomer = (overrides: Partial<Customer> = {}): Customer => ({

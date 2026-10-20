@@ -15,6 +15,8 @@ export const useLiveAccount = () => {
     return container.realtime.watchCustomer(userId, () => {
       queryClient.invalidateQueries({ queryKey: ['account'] });
       queryClient.invalidateQueries({ queryKey: ['notifications'] });
+      queryClient.invalidateQueries({ queryKey: ['purchases'] });
+      queryClient.invalidateQueries({ queryKey: ['points-history'] });
     });
   }, [userId, queryClient]);
 };

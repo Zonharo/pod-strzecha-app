@@ -12,6 +12,12 @@ import {
   makeVerifyLoginCode,
 } from '@/application/use-cases/account/auth';
 import { makeGetCard } from '@/application/use-cases/card/card';
+import {
+  makeGetPurchase,
+  makeListPointsHistory,
+  makeListPurchases,
+  makeRatePurchase,
+} from '@/application/use-cases/purchases/purchases';
 import type { ProgramSettings } from '@/application/ports/account';
 import type { Customer } from '@/domain/customer/customer';
 import {
@@ -21,6 +27,7 @@ import {
 import { makeSupabaseAuthGateway } from '@/infrastructure/repositories/supabase-auth-gateway';
 import { makeSupabaseCardRepository } from '@/infrastructure/repositories/supabase-card-repository';
 import { makeSupabaseCustomerRepository } from '@/infrastructure/repositories/supabase-customer-repository';
+import { makeSupabasePurchaseRepository } from '@/infrastructure/repositories/supabase-purchase-repository';
 import { makeJsonCache } from '@/infrastructure/storage/local-store';
 import { secureCardVault } from '@/infrastructure/storage/secure-card-vault';
 import { supabase } from '@/infrastructure/supabase/client';
@@ -34,6 +41,7 @@ const customers = makeSupabaseCustomerRepository(supabase, customerCache);
 const program = makeSupabaseProgramRepository(supabase, settingsCache);
 const stores = makeSupabaseStoreRepository(supabase);
 const cards = makeSupabaseCardRepository(supabase);
+const purchases = makeSupabasePurchaseRepository(supabase);
 const realtime = makeRealtime(supabase);
 
 const signOut = makeSignOut({ auth, caches: [customerCache, secureCardVault] });
@@ -76,6 +84,12 @@ export const container = {
   },
   card: {
     get: makeGetCard({ cards, vault: secureCardVault }),
+  },
+  purchases: {
+    list: makeListPurchases({ purchases }),
+    get: makeGetPurchase({ purchases }),
+    rate: makeRatePurchase({ purchases }),
+    pointsHistory: makeListPointsHistory({ purchases }),
   },
   realtime: {
     watchCustomer: realtime.watchCustomer,
