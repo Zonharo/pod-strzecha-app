@@ -1,0 +1,19 @@
+services:
+  app:
+    image: node:22
+    working_dir: /app
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+      - expo_cache:/root/.expo
+    ports:
+      - '8081:8081'
+    environment:
+      REACT_NATIVE_PACKAGER_HOSTNAME: ${HOST_IP:-127.0.0.1}
+      EXPO_NO_TELEMETRY: '1'
+    tty: true
+    stdin_open: true
+
+volumes:
+  node_modules:
+  expo_cache:
