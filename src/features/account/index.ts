@@ -6,5 +6,5 @@ export { SignInScreen } from './components/sign-in-screen';
 export { TermsContent } from './components/terms-screen';
 export { VerifyCodeScreen } from './components/verify-code-screen';
 export { useLiveAccount } from './live';
-export { useAccountState, useCustomer } from './queries';
+export { useAccountState, useCustomer, useProgramSettings } from './queries';
 export { SessionProvider, useSession } from './session';

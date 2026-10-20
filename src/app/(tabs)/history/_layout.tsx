@@ -6,6 +6,12 @@ export default function HistoryLayout() {
       <Stack.Screen name="index">
         <Stack.Title large>Historia</Stack.Title>
       </Stack.Screen>
+      <Stack.Screen name="[id]">
+        <Stack.Title>Zakupy</Stack.Title>
+      </Stack.Screen>
+      <Stack.Screen name="points">
+        <Stack.Title>Historia kłosków</Stack.Title>
+      </Stack.Screen>
     </Stack>
   );
 }

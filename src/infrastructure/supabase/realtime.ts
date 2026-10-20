@@ -19,6 +19,16 @@ export const makeRealtime = (supabase: SupabaseClient) => ({
         },
         onChange,
       )
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'reward_redemptions',
+          filter: `customer_id=eq.${userId}`,
+        },
+        onChange,
+      )
       .subscribe();
     return () => {
       supabase.removeChannel(channel);

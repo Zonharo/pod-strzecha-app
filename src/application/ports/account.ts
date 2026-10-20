@@ -43,6 +43,7 @@ export type ProgramSettings = {
   pointsPerZloty: number;
   pointsInactivityMonths: number;
   rewardValidDays: number;
+  ratingWindowDays: number;
 };
 
 export type ProgramRepository = {

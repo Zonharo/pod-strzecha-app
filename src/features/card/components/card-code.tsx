@@ -5,7 +5,7 @@ import { cardCodeAt, formatCardNumber, formatCode, type LoyaltyCard } from '@/do
 import { Text } from '@/shared/ui/text';
 import { radius, spacing, useTheme } from '@/shared/ui/theme';
 
-import { useNow } from '../hooks';
+import { useNow } from '@/shared/hooks/use-now';
 
 const QR_SIZE = 232;
 

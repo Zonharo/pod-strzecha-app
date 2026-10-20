@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import * as Brightness from 'expo-brightness';
 import { useFocusEffect } from 'expo-router';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
 import { AppState, Platform } from 'react-native';
 
 import { useSession } from '@/features/account';
@@ -17,15 +17,6 @@ export const useCard = () => {
     staleTime: 5 * 60_000,
     retry: false,
   });
-};
-
-export const useNow = (intervalMs = 1000): number => {
-  const [now, setNow] = useState(() => Date.now());
-  useEffect(() => {
-    const timer = setInterval(() => setNow(Date.now()), intervalMs);
-    return () => clearInterval(timer);
-  }, [intervalMs]);
-  return now;
 };
 
 const restore = async (previous: number | null) => {

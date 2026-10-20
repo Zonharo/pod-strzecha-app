@@ -1,3 +1,5 @@
+import { MONTHS_GENITIVE } from '../format';
+
 export type Birthday = { month: number; day: number };
 
 export type Customer = {
@@ -38,19 +40,5 @@ export const isValidBirthday = ({ month, day }: Birthday): boolean => {
   return max !== undefined && day >= 1 && day <= max;
 };
 
-const MONTHS = [
-  'stycznia',
-  'lutego',
-  'marca',
-  'kwietnia',
-  'maja',
-  'czerwca',
-  'lipca',
-  'sierpnia',
-  'września',
-  'października',
-  'listopada',
-  'grudnia',
-];
-
-export const formatBirthday = ({ month, day }: Birthday): string => `${day} ${MONTHS[month - 1]}`;
+export const formatBirthday = ({ month, day }: Birthday): string =>
+  `${day} ${MONTHS_GENITIVE[month - 1]}`;
