@@ -22,3 +22,4 @@ identyfikatory w kodzie po angielsku.
 - Każda nowa tabela: RLS w tej samej migracji i jawne `grant` (domyślne uprawnienia są wyłączone).
 - Zmiany salda, kuponów i nagród tylko przez funkcje `security definer`. Błędy oczekiwane: `P0001` z kodem w `hint`.
 - Małe kroki. Każdy kończy się działającą rzeczą do sprawdzenia na telefonie.
+- Pracujemy wyłącznie na `main`: commit i push prosto do `main`, bez gałęzi i PR-ów. Błąd naprawia kolejny commit.
