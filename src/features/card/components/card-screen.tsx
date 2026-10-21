@@ -5,7 +5,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { pluralPl } from '@/domain/format';
 import { formatPoints } from '@/domain/points/points';
 import { useCustomer } from '@/features/account';
-import { useCoupons, useRewards } from '@/features/offers';
+import { NotificationBell } from '@/features/notifications';
+import { OffersStrip, useCoupons, useRewards } from '@/features/offers';
 import { Button } from '@/shared/ui/button';
 import { GlassCard } from '@/shared/ui/glass-card';
 import { Text } from '@/shared/ui/text';
@@ -39,12 +40,15 @@ export function CardScreen() {
         contentInsetAdjustmentBehavior="never"
       >
         <View style={styles.header}>
-          <Text variant="label" muted>
-            Pod Strzechą
-          </Text>
-          <Text variant="display">
-            {customer?.firstName ? `Cześć, ${customer.firstName}!` : 'Dzień dobry!'}
-          </Text>
+          <View style={styles.headerTexts}>
+            <Text variant="label" muted>
+              Pod Strzechą
+            </Text>
+            <Text variant="display">
+              {customer?.firstName ? `Cześć, ${customer.firstName}!` : 'Dzień dobry!'}
+            </Text>
+          </View>
+          <NotificationBell />
         </View>
 
         <GlassCard style={styles.card}>
@@ -112,6 +116,8 @@ export function CardScreen() {
             </Text>
           ) : null}
         </GlassCard>
+
+        <OffersStrip />
       </ScrollView>
     </View>
   );
@@ -145,8 +151,14 @@ const styles = StyleSheet.create({
     gap: spacing.md,
   },
   header: {
-    gap: spacing.xs,
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: spacing.md,
     marginBottom: spacing.sm,
+  },
+  headerTexts: {
+    flex: 1,
+    gap: spacing.xs,
   },
   card: {
     gap: spacing.md,

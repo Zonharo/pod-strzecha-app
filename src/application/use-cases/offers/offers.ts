@@ -53,3 +53,8 @@ export const makeCancelRedemption =
   ({ offers }: { offers: OfferRepository }) =>
   (redemptionId: string): Promise<Result<void, DomainErrorCode>> =>
     offers.cancelRedemption(redemptionId);
+
+export const makeListOffers =
+  ({ offers }: { offers: OfferRepository }) =>
+  (storeId: string | null) =>
+    offers.offersForStore(storeId);

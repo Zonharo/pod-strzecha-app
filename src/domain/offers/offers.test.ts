@@ -4,6 +4,7 @@ import {
   benefitLabel,
   isCouponUsable,
   isSoldOut,
+  offerTarget,
   pointsMissing,
   rewardProgress,
   splitCoupons,
@@ -109,5 +110,38 @@ describe('nagrody', () => {
     expect(isSoldOut({ stock: 0 })).toBe(true);
     expect(isSoldOut({ stock: null })).toBe(false);
     expect(isSoldOut({ stock: 3 })).toBe(false);
+  });
+});
+
+describe('offerTarget', () => {
+  const offer = {
+    id: 'o',
+    title: 'Oferta',
+    body: '',
+    imageUrl: null,
+    couponId: null,
+    rewardId: null,
+    linkUrl: null,
+    endsAt: '2026-11-01T00:00:00Z',
+  };
+
+  it('kupon ma pierwszeństwo, potem nagroda, potem strona', () => {
+    expect(offerTarget({ ...offer, couponId: 'c', rewardId: 'r' })).toEqual({
+      kind: 'coupon',
+      route: '/coupons/c',
+    });
+    expect(offerTarget({ ...offer, rewardId: 'r' })).toEqual({
+      kind: 'reward',
+      route: '/rewards/r',
+    });
+    expect(offerTarget({ ...offer, linkUrl: 'https://podstrzecha.pl' })).toEqual({
+      kind: 'web',
+      url: 'https://podstrzecha.pl',
+    });
+  });
+
+  it('bez celu albo z niebezpiecznym linkiem nie prowadzi nigdzie', () => {
+    expect(offerTarget(offer)).toBeNull();
+    expect(offerTarget({ ...offer, linkUrl: 'http://podstrzecha.pl' })).toBeNull();
   });
 });

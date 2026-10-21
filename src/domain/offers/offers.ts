@@ -50,6 +50,30 @@ export type Redemption = {
   reward: Pick<Reward, 'id' | 'title' | 'description' | 'imageUrl' | 'benefit'>;
 };
 
+export type Offer = {
+  id: string;
+  title: string;
+  body: string;
+  imageUrl: string | null;
+  couponId: string | null;
+  rewardId: string | null;
+  linkUrl: string | null;
+  endsAt: string;
+};
+
+export type OfferTarget =
+  | { kind: 'coupon'; route: string }
+  | { kind: 'reward'; route: string }
+  | { kind: 'web'; url: string }
+  | null;
+
+export const offerTarget = (offer: Offer): OfferTarget => {
+  if (offer.couponId) return { kind: 'coupon', route: `/coupons/${offer.couponId}` };
+  if (offer.rewardId) return { kind: 'reward', route: `/rewards/${offer.rewardId}` };
+  if (offer.linkUrl?.startsWith('https://')) return { kind: 'web', url: offer.linkUrl };
+  return null;
+};
+
 const formatNumber = (value: number) =>
   Number.isInteger(value) ? String(value) : String(value).replace('.', ',');
 

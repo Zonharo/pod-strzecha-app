@@ -134,6 +134,24 @@ export const makeSupabaseOfferRepository = (supabase: SupabaseClient): OfferRepo
     return result.ok ? ok(data!) : err(result.error);
   },
 
+  async offersForStore(storeId) {
+    const { data, error } = await supabase.rpc(
+      'offers_for_store',
+      storeId ? { p_store_id: storeId } : {},
+    );
+    if (error) throw new Error(error.message);
+    return data.map((row) => ({
+      id: row.id,
+      title: row.title,
+      body: row.body,
+      imageUrl: imageUrl(supabase, row.image_path),
+      couponId: row.coupon_id,
+      rewardId: row.reward_id,
+      linkUrl: row.link_url,
+      endsAt: row.ends_at,
+    }));
+  },
+
   async cancelRedemption(redemptionId) {
     const { error } = await supabase.rpc('cancel_reward_redemption', {
       p_redemption_id: redemptionId,

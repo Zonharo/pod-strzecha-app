@@ -20,6 +20,18 @@ export const useCoupons = () => {
   });
 };
 
+export const useOffers = () => {
+  const userId = useUserId();
+  const customer = useCustomer();
+  const storeId = customer?.homeStoreId ?? null;
+  return useQuery({
+    queryKey: ['offers', userId, storeId],
+    queryFn: () => container.offers.listOffers(storeId),
+    enabled: !!userId,
+    staleTime: 5 * 60_000,
+  });
+};
+
 export const useRewards = () => {
   const userId = useUserId();
   return useQuery({

@@ -61,6 +61,14 @@ function RootNavigator() {
       </Stack.Protected>
       <Stack.Protected guard={signedIn && state === 'ready'}>
         <Stack.Screen name="(tabs)" />
+        <Stack.Screen
+          name="notifications"
+          options={{ headerShown: true, title: 'Powiadomienia', headerBackTitle: 'Wróć' }}
+        />
+        <Stack.Screen
+          name="offers/[id]"
+          options={{ headerShown: true, title: 'Oferta', headerBackTitle: 'Wróć' }}
+        />
       </Stack.Protected>
       <Stack.Screen
         name="terms"

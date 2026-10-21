@@ -41,6 +41,7 @@ const fakeOffers = (overrides: Partial<OfferRepository> = {}): OfferRepository =
   myRedemptions: vi.fn(async () => []),
   redeemReward: vi.fn(async () => ok('rr')),
   cancelRedemption: vi.fn(async () => ok(undefined)),
+  offersForStore: vi.fn(async () => []),
   ...overrides,
 });
 

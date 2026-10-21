@@ -66,6 +66,15 @@ Warunek w Supabase: szablony **Magic Link** i **Confirm signup** muszą zawiera�
   docierają na żywo przez Realtime.
 - Obrazki z publicznego bucketu `media` (`image_path` w tabelach), bez obrazka pokazuje się ikona.
 
+## Powiadomienia i oferty
+
+- Dzwonek na karcie pokazuje liczbę nieprzeczytanych (`customer_notifications`, odświeżane przez Realtime).
+  Skrzynka (`/notifications`) oznacza wszystko jako przeczytane po otwarciu, nowe pozostają wyróżnione do
+  następnego odświeżenia. Link z bazy przechodzi przez `appRoute()`: `/card` to karta, przepuszczane są tylko
+  znane trasy aplikacji.
+- Oferty „Dla Ciebie” na karcie z `offers_for_store(ulubiony sklep)`. Ekran oferty (`/offers/<id>`) prowadzi
+  do kuponu, nagrody albo strony `https://`.
+
 ## Kasa testowa
 
 Do czasu własnego POS-a zakupy wprowadza skrypt, który woła te same funkcje co przyszła kasa

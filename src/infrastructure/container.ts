@@ -13,9 +13,15 @@ import {
 } from '@/application/use-cases/account/auth';
 import { makeGetCard } from '@/application/use-cases/card/card';
 import {
+  makeListNotifications,
+  makeMarkAllRead,
+  makeUnreadCount,
+} from '@/application/use-cases/notifications/notifications';
+import {
   makeActivateCoupon,
   makeCancelRedemption,
   makeListCoupons,
+  makeListOffers,
   makeListRewards,
   makeRedeemReward,
 } from '@/application/use-cases/offers/offers';
@@ -34,6 +40,7 @@ import {
 import { makeSupabaseAuthGateway } from '@/infrastructure/repositories/supabase-auth-gateway';
 import { makeSupabaseCardRepository } from '@/infrastructure/repositories/supabase-card-repository';
 import { makeSupabaseCustomerRepository } from '@/infrastructure/repositories/supabase-customer-repository';
+import { makeSupabaseNotificationRepository } from '@/infrastructure/repositories/supabase-notification-repository';
 import { makeSupabaseOfferRepository } from '@/infrastructure/repositories/supabase-offer-repository';
 import { makeSupabasePurchaseRepository } from '@/infrastructure/repositories/supabase-purchase-repository';
 import { makeJsonCache } from '@/infrastructure/storage/local-store';
@@ -51,6 +58,7 @@ const stores = makeSupabaseStoreRepository(supabase);
 const cards = makeSupabaseCardRepository(supabase);
 const purchases = makeSupabasePurchaseRepository(supabase);
 const offers = makeSupabaseOfferRepository(supabase);
+const notifications = makeSupabaseNotificationRepository(supabase);
 const realtime = makeRealtime(supabase);
 
 const signOut = makeSignOut({ auth, caches: [customerCache, secureCardVault] });
@@ -106,6 +114,12 @@ export const container = {
     listRewards: makeListRewards({ offers }),
     redeemReward: makeRedeemReward({ offers }),
     cancelRedemption: makeCancelRedemption({ offers }),
+    listOffers: makeListOffers({ offers }),
+  },
+  notifications: {
+    list: makeListNotifications({ notifications }),
+    unreadCount: makeUnreadCount({ notifications }),
+    markAllRead: makeMarkAllRead({ notifications }),
   },
   realtime: {
     watchCustomer: realtime.watchCustomer,
