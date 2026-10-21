@@ -13,6 +13,13 @@ import {
 } from '@/application/use-cases/account/auth';
 import { makeGetCard } from '@/application/use-cases/card/card';
 import {
+  makeActivateCoupon,
+  makeCancelRedemption,
+  makeListCoupons,
+  makeListRewards,
+  makeRedeemReward,
+} from '@/application/use-cases/offers/offers';
+import {
   makeGetPurchase,
   makeListPointsHistory,
   makeListPurchases,
@@ -27,6 +34,7 @@ import {
 import { makeSupabaseAuthGateway } from '@/infrastructure/repositories/supabase-auth-gateway';
 import { makeSupabaseCardRepository } from '@/infrastructure/repositories/supabase-card-repository';
 import { makeSupabaseCustomerRepository } from '@/infrastructure/repositories/supabase-customer-repository';
+import { makeSupabaseOfferRepository } from '@/infrastructure/repositories/supabase-offer-repository';
 import { makeSupabasePurchaseRepository } from '@/infrastructure/repositories/supabase-purchase-repository';
 import { makeJsonCache } from '@/infrastructure/storage/local-store';
 import { secureCardVault } from '@/infrastructure/storage/secure-card-vault';
@@ -42,6 +50,7 @@ const program = makeSupabaseProgramRepository(supabase, settingsCache);
 const stores = makeSupabaseStoreRepository(supabase);
 const cards = makeSupabaseCardRepository(supabase);
 const purchases = makeSupabasePurchaseRepository(supabase);
+const offers = makeSupabaseOfferRepository(supabase);
 const realtime = makeRealtime(supabase);
 
 const signOut = makeSignOut({ auth, caches: [customerCache, secureCardVault] });
@@ -90,6 +99,13 @@ export const container = {
     get: makeGetPurchase({ purchases }),
     rate: makeRatePurchase({ purchases }),
     pointsHistory: makeListPointsHistory({ purchases }),
+  },
+  offers: {
+    listCoupons: makeListCoupons({ offers }),
+    activateCoupon: makeActivateCoupon({ offers }),
+    listRewards: makeListRewards({ offers }),
+    redeemReward: makeRedeemReward({ offers }),
+    cancelRedemption: makeCancelRedemption({ offers }),
   },
   realtime: {
     watchCustomer: realtime.watchCustomer,

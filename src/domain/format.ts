@@ -39,3 +39,11 @@ export const formatDate = (iso: string): string => {
   const date = new Date(iso);
   return `${date.getDate()} ${MONTHS_GENITIVE[date.getMonth()]} ${date.getFullYear()}`;
 };
+
+export const pluralPl = (count: number, one: string, few: string, many: string): string => {
+  const n = Math.abs(Math.trunc(count));
+  if (n === 1) return one;
+  const lastDigit = n % 10;
+  const lastTwo = n % 100;
+  return lastDigit >= 2 && lastDigit <= 4 && (lastTwo < 12 || lastTwo > 14) ? few : many;
+};

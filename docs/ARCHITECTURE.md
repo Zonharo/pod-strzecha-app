@@ -54,6 +54,18 @@ Warunek w Supabase: szablony **Magic Link** i **Confirm signup** muszą zawiera�
   prosto do zakupu (`/history/<id>`).
 - Historia kłosków (`/history/points`) to księga `points_ledger` z opisem każdej pozycji.
 
+## Kupony i nagrody
+
+- Kupony (`/coupons`): „Twoje kupony” (aktywowane i osobiste, np. urodzinowe, ważne i z pozostałymi użyciami)
+  oraz „Do aktywacji” z `coupons_for_store(ulubiony sklep)`, więc klient widzi tylko kupony ważne w swoim sklepie.
+  Aktywacja przez `activate_coupon`, ponowna zwraca ten sam kupon.
+- Nagrody (`/rewards`): katalog posortowany po cenie z paskiem postępu, wymiana z potwierdzeniem przez
+  `redeem_reward`, „Do odebrania” z anulowaniem (`cancel_reward_redemption`, kłoski wracają). Przypomnienie
+  o wygasającej nagrodzie prowadzi do `/rewards/redemptions/<id>`.
+- Karta pokazuje, ile kuponów i nagród zadziała przy kasie. Zmiany z kasy (zużyty kupon, wydana nagroda)
+  docierają na żywo przez Realtime.
+- Obrazki z publicznego bucketu `media` (`image_path` w tabelach), bez obrazka pokazuje się ikona.
+
 ## Kasa testowa
 
 Do czasu własnego POS-a zakupy wprowadza skrypt, który woła te same funkcje co przyszła kasa

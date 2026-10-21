@@ -1,1 +1,1 @@
-export { RewardsScreen as default } from '@/features/rewards';
+export { RewardsScreen as default } from '@/features/offers';

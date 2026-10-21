@@ -2,8 +2,10 @@ import { SymbolView } from 'expo-symbols';
 import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { pluralPl } from '@/domain/format';
 import { formatPoints } from '@/domain/points/points';
 import { useCustomer } from '@/features/account';
+import { useCoupons, useRewards } from '@/features/offers';
 import { Button } from '@/shared/ui/button';
 import { GlassCard } from '@/shared/ui/glass-card';
 import { Text } from '@/shared/ui/text';
@@ -17,6 +19,14 @@ export function CardScreen() {
   const insets = useSafeAreaInsets();
   const customer = useCustomer();
   const card = useCard();
+  const coupons = useCoupons();
+  const rewards = useRewards();
+  const couponCount = coupons.data?.active.length ?? 0;
+  const rewardCount = rewards.data?.waiting.length ?? 0;
+  const extras = [
+    couponCount ? `${couponCount} ${pluralPl(couponCount, 'kupon', 'kupony', 'kuponów')}` : null,
+    rewardCount ? `${rewardCount} ${pluralPl(rewardCount, 'nagroda', 'nagrody', 'nagród')}` : null,
+  ].filter(Boolean);
   const ready = card.data?.kind === 'ready' ? card.data : null;
   useFullBrightness(!!ready);
 
@@ -88,6 +98,14 @@ export function CardScreen() {
             Pokaż kod przy kasie, a kłoski dopiszą się same. Kod zmienia się co pół minuty, więc
             zrzut ekranu nie zadziała.
           </Text>
+          {extras.length ? (
+            <Text
+              variant="caption"
+              style={[styles.offline, { color: colors.ink, fontWeight: '600' }]}
+            >
+              Przy kasie zadziałają też: {extras.join(' i ')}.
+            </Text>
+          ) : null}
           {ready?.offline ? (
             <Text variant="caption" muted style={styles.offline}>
               Jesteś bez internetu. Kod działa, a saldo odświeży się po połączeniu.

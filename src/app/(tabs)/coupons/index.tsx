@@ -1,1 +1,1 @@
-export { CouponsScreen as default } from '@/features/coupons';
+export { CouponsScreen as default } from '@/features/offers';
