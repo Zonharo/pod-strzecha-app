@@ -22,9 +22,19 @@ export const makeRealtime = (supabase: SupabaseClient) => ({
       .on(
         'postgres_changes',
         {
-          event: 'UPDATE',
+          event: '*',
           schema: 'public',
           table: 'reward_redemptions',
+          filter: `customer_id=eq.${userId}`,
+        },
+        onChange,
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'customer_coupons',
           filter: `customer_id=eq.${userId}`,
         },
         onChange,

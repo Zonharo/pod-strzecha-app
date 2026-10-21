@@ -17,6 +17,8 @@ export const useLiveAccount = () => {
       queryClient.invalidateQueries({ queryKey: ['notifications'] });
       queryClient.invalidateQueries({ queryKey: ['purchases'] });
       queryClient.invalidateQueries({ queryKey: ['points-history'] });
+      queryClient.invalidateQueries({ queryKey: ['coupons'] });
+      queryClient.invalidateQueries({ queryKey: ['rewards'] });
     });
   }, [userId, queryClient]);
 };
