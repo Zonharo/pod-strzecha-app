@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
 
 import { formatBirthday } from '@/domain/customer/customer';
@@ -14,7 +14,7 @@ import { spacing, useTheme } from '@/shared/ui/theme';
 import { accountErrorMessage } from '../messages';
 import { useCustomer, useRefreshAccount } from '../queries';
 
-export function AccountScreen() {
+export function AccountScreen({ notifications }: { notifications?: ReactNode }) {
   const { colors } = useTheme();
   const customer = useCustomer();
   const refreshAccount = useRefreshAccount();
@@ -88,6 +88,8 @@ export function AccountScreen() {
           onValueChange={(value) => updateMarketing({ marketingEmail: value })}
         />
       </GlassCard>
+
+      {notifications ? <GlassCard style={styles.list}>{notifications}</GlassCard> : null}
 
       <GlassCard style={styles.list}>
         <ListRow title="Regulamin programu" onPress={() => router.push('/terms')} />

@@ -75,6 +75,14 @@ Warunek w Supabase: szablony **Magic Link** i **Confirm signup** muszą zawiera�
 - Oferty „Dla Ciebie” na karcie z `offers_for_store(ulubiony sklep)`. Ekran oferty (`/offers/<id>`) prowadzi
   do kuponu, nagrody albo strony `https://`.
 
+## Push na telefon
+
+- Telefon rejestruje token Expo (`register_push_token`) po zgodzie systemu. Bez identyfikatora projektu EAS
+  (Expo Go) rejestracja się nie odbywa, a w Koncie widać „Zadziałają w pełnej wersji aplikacji ze sklepu”.
+- Przy starcie aplikacja odświeża token po cichu, jeśli zgoda już jest. Wylogowanie wyrejestrowuje token
+  przed zakończeniem sesji.
+- Dotknięcie powiadomienia otwiera ekran z linku (przez `appRoute()`), każde tylko raz.
+
 ## Kasa testowa
 
 Do czasu własnego POS-a zakupy wprowadza skrypt, który woła te same funkcje co przyszła kasa

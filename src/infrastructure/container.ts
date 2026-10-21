@@ -43,6 +43,11 @@ import { makeSupabaseCustomerRepository } from '@/infrastructure/repositories/su
 import { makeSupabaseNotificationRepository } from '@/infrastructure/repositories/supabase-notification-repository';
 import { makeSupabaseOfferRepository } from '@/infrastructure/repositories/supabase-offer-repository';
 import { makeSupabasePurchaseRepository } from '@/infrastructure/repositories/supabase-purchase-repository';
+import {
+  configureNotificationHandler,
+  makeExpoPushRegistrar,
+  useLastNotificationLink,
+} from '@/infrastructure/push/expo-push-registrar';
 import { makeJsonCache } from '@/infrastructure/storage/local-store';
 import { secureCardVault } from '@/infrastructure/storage/secure-card-vault';
 import { supabase } from '@/infrastructure/supabase/client';
@@ -60,8 +65,11 @@ const purchases = makeSupabasePurchaseRepository(supabase);
 const offers = makeSupabaseOfferRepository(supabase);
 const notifications = makeSupabaseNotificationRepository(supabase);
 const realtime = makeRealtime(supabase);
+const push = makeExpoPushRegistrar(supabase);
 
-const signOut = makeSignOut({ auth, caches: [customerCache, secureCardVault] });
+configureNotificationHandler();
+
+const signOut = makeSignOut({ auth, caches: [push, customerCache, secureCardVault] });
 
 export type SessionUser = { id: string; email: string | null };
 
@@ -120,6 +128,11 @@ export const container = {
     list: makeListNotifications({ notifications }),
     unreadCount: makeUnreadCount({ notifications }),
     markAllRead: makeMarkAllRead({ notifications }),
+  },
+  push: {
+    status: () => push.status(),
+    enable: (ask: boolean) => push.enable(ask),
+    useLastNotificationLink,
   },
   realtime: {
     watchCustomer: realtime.watchCustomer,

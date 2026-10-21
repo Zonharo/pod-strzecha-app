@@ -120,6 +120,15 @@ Wyłączenie: `update public.pos_terminals set is_active = false where ...`.
 | `birthday-coupons` | 06:00     | wydaje kupon urodzinowy (czas Europe/Warsaw)                                            |
 | `cleanup`          | 03:00     | usuwa sesje kasy starsze niż 2 dni, powiadomienia starsze niż 180 dni, stare logi crona |
 
+## Push (pg_net i Expo Push API)
+
+- Trigger `customer_notifications_push` wysyła każde nowe powiadomienie na tokeny klienta (najwyżej 10 urządzeń)
+  jednym żądaniem `net.http_post` do `https://exp.host/--/api/v2/push/send`. Powiadomienia `offer` idą tylko
+  przy `marketing_push`. Expo nie wymaga klucza, więc w bazie nie ma żadnego sekretu.
+- Zadanie `process-push` (co 10 min) czyta odpowiedzi z `net._http_response`: usuwa tokeny z błędem
+  `DeviceNotRegistered`, zapisuje bilety w `private.push_tickets`, po 15 minutach pyta o potwierdzenia
+  (`getReceipts`) i usuwa tokeny odinstalowanych aplikacji. Historia żądań i biletów żyje 2 dni.
+
 ## Treści programu
 
 Do czasu modułu w panelu kupony, nagrody i oferty dodaje się w **Table Editor** albo SQL Editor
