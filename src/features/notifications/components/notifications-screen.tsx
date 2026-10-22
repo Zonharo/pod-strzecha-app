@@ -45,7 +45,7 @@ function NotificationRow({ item }: { item: AppNotification }) {
   return (
     <Pressable
       disabled={!route}
-      onPress={() => route && router.push(route as Href)}
+      onPress={() => route && router.navigate(route as Href)}
       style={({ pressed }) => [
         styles.row,
         {

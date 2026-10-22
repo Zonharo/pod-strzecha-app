@@ -46,9 +46,9 @@ export function OfferScreen() {
         </Text>
       </GlassCard>
       {target?.kind === 'coupon' ? (
-        <Button title="Zobacz kupon" onPress={() => router.push(target.route as Href)} />
+        <Button title="Zobacz kupon" onPress={() => router.navigate(target.route as Href)} />
       ) : target?.kind === 'reward' ? (
-        <Button title="Zobacz nagrodę" onPress={() => router.push(target.route as Href)} />
+        <Button title="Zobacz nagrodę" onPress={() => router.navigate(target.route as Href)} />
       ) : target?.kind === 'web' ? (
         <Button
           variant="secondary"

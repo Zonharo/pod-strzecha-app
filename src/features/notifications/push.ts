@@ -31,6 +31,6 @@ export const usePushOnLaunch = () => {
     if (!last || handled.current === last.id) return;
     handled.current = last.id;
     const route = appRoute(last.link);
-    if (route) router.push(route as Href);
+    if (route) router.navigate(route as Href);
   }, [last]);
 };
