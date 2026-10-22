@@ -4,7 +4,9 @@ import type { AuthErrorCode, AuthGateway } from '@/application/ports/account';
 import { err, ok } from '@/domain/result';
 import type { SupabaseClient } from '@/infrastructure/supabase/client';
 
-const toAuthErrorCode = (error: AuthError): AuthErrorCode => {
+export const toAuthErrorCode = (
+  error: Pick<AuthError, 'name' | 'status' | 'code' | 'message'>,
+): AuthErrorCode => {
   if (error.status === 429 || /rate_limit/.test(error.code ?? '')) return 'rate_limited';
   if (['otp_expired', 'invalid_credentials'].includes(error.code ?? '') || error.status === 403) {
     return 'invalid_code';
@@ -12,6 +14,7 @@ const toAuthErrorCode = (error: AuthError): AuthErrorCode => {
   if (['email_address_invalid', 'validation_failed'].includes(error.code ?? '')) {
     return 'invalid_email';
   }
+  if ((error.status ?? 0) >= 500) return 'server_error';
   if (error.name === 'AuthRetryableFetchError' || /network/i.test(error.message)) return 'network';
   return 'unknown';
 };

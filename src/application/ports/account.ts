@@ -4,7 +4,7 @@ import type { Result } from '@/domain/result';
 import type { Store } from '@/domain/stores/store';
 
 export type AuthErrorCode =
-  'invalid_code' | 'rate_limited' | 'invalid_email' | 'network' | 'unknown';
+  'invalid_code' | 'rate_limited' | 'invalid_email' | 'network' | 'server_error' | 'unknown';
 
 export type AuthGateway = {
   sendCode(email: string): Promise<Result<void, AuthErrorCode>>;

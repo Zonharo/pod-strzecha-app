@@ -139,5 +139,6 @@ Do czasu modułu w panelu kupony, nagrody i oferty dodaje się w **Table Editor*
 
 - **Sign In / Providers → Email:** włączone. Email OTP Length 6, Email OTP Expiration 600 s.
 - **Email Templates → Magic Link** i **Confirm signup:** treść z kodem `{{ .Token }}`, bez linku.
-- **SMTP:** Resend (podłączony).
+- **SMTP:** Resend. Adres nadawcy musi być w domenie zweryfikowanej w Resend (rekordy DNS), inaczej Resend
+  odrzuca wysyłkę (błąd 550), a Supabase zwraca 500 i kod nie przychodzi.
 - **Apple i Google:** po założeniu kont deweloperskich.

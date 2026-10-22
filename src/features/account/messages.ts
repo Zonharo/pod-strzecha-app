@@ -10,6 +10,7 @@ const AUTH: Record<AuthErrorCode, string> = {
   invalid_code: 'Ten kod nie pasuje albo już wygasł.',
   rate_limited: 'Za dużo prób. Spróbuj za kilka minut.',
   network: NETWORK,
+  server_error: 'Coś nie działa po naszej stronie. Spróbuj za kilka minut.',
   unknown: GENERIC,
 };
 
