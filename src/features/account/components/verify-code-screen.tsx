@@ -1,7 +1,8 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { container } from '@/infrastructure/container';
+import { useNow } from '@/shared/hooks/use-now';
 import { Button } from '@/shared/ui/button';
 import { FormScreen } from '@/shared/ui/form-screen';
 import { Text } from '@/shared/ui/text';
@@ -17,13 +18,9 @@ export function VerifyCodeScreen() {
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const [secondsLeft, setSecondsLeft] = useState(RESEND_SECONDS);
-
-  useEffect(() => {
-    if (secondsLeft <= 0) return;
-    const timer = setTimeout(() => setSecondsLeft((s) => s - 1), 1000);
-    return () => clearTimeout(timer);
-  }, [secondsLeft]);
+  const [resendAt, setResendAt] = useState(() => Date.now() + RESEND_SECONDS * 1000);
+  const now = useNow(1000);
+  const secondsLeft = Math.max(0, Math.ceil((resendAt - now) / 1000));
 
   const verify = async (value: string) => {
     setBusy(true);
@@ -47,7 +44,7 @@ export function VerifyCodeScreen() {
       setError(authErrorMessage(result.error));
       return;
     }
-    setSecondsLeft(RESEND_SECONDS);
+    setResendAt(Date.now() + RESEND_SECONDS * 1000);
     setNotice('Wysłaliśmy nowy kod.');
   };
 
