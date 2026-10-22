@@ -95,8 +95,8 @@ Do czasu własnego POS-a zakupy wprowadza skrypt, który woła te same funkcje c
 ./scripts/kasa.sh --zwrot TEST-1792512216264
 ```
 
-Kod wpisuje się tak, jak widać go w aplikacji: 13 cyfr numeru karty i 6 cyfr kodu. Sam numer karty nalicza kłoski,
-ale nie pozwala użyć kuponów ani nagród.
+Skrypt pyta najpierw o numer karty (13 cyfr, zapamiętuje go w `.kasa.local`), potem o 6 cyfr kodu spod QR.
+Enter bez kodu nalicza kłoski na sam numer, ale bez kuponów i nagród.
 
 ## Błędy
 

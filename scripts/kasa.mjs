@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { createInterface } from 'node:readline/promises';
 import { parseArgs } from 'node:util';
 
@@ -55,6 +55,35 @@ const toPayload = (input) => {
   return digits;
 };
 
+const LAST_CARD_FILE = '.kasa.local';
+
+const lastCard = () => {
+  if (!existsSync(LAST_CARD_FILE)) return null;
+  const value = readFileSync(LAST_CARD_FILE, 'utf8').trim();
+  return /^\d{13}$/.test(value) ? value : null;
+};
+
+const askForCode = async () => {
+  const remembered = lastCard();
+  const cardAnswer = (
+    await prompt(
+      remembered
+        ? `Numer karty (13 cyfr pod kodem, Enter = ${remembered}): `
+        : 'Numer karty (13 cyfr pod kodem): ',
+    )
+  ).replace(/\s+/g, '');
+  if (/^\d{19}$/.test(cardAnswer) || cardAnswer.startsWith('PS1.')) return toPayload(cardAnswer);
+  const card = cardAnswer || remembered;
+  if (!card || !/^\d{13}$/.test(card)) throw new Error('Numer karty ma 13 cyfr');
+  writeFileSync(LAST_CARD_FILE, `${card}\n`);
+  const otp = (
+    await prompt('Kod z karty (6 cyfr, zmienia się co 30 s, Enter = sam numer): ')
+  ).replace(/\s+/g, '');
+  if (!otp) return card;
+  if (!/^\d{6}$/.test(otp)) throw new Error('Kod z karty ma 6 cyfr');
+  return `PS1.${card}.${otp}`;
+};
+
 const pickIds = (answer, items) =>
   answer
     .split(/[ ,]+/)
@@ -90,8 +119,14 @@ const pointsWord = (count) => {
 
 const points = (count) => `${count} ${pointsWord(count)}`;
 
-const rl = createInterface({ input: process.stdin, output: process.stdout });
-const ask = async (question, preset) => preset ?? (await rl.question(question));
+const rl = createInterface({ input: process.stdin, terminal: false });
+const lines = rl[Symbol.asyncIterator]();
+const prompt = async (question) => {
+  process.stdout.write(question);
+  const { value, done } = await lines.next();
+  return done ? '' : value;
+};
+const ask = async (question, preset) => preset ?? (await prompt(question));
 
 try {
   if (values.zwrot) {
@@ -101,9 +136,7 @@ try {
     });
     console.log(`Zwrot zapisany. Saldo klienta: ${points(result.points_balance ?? 0)}.`);
   } else {
-    const code = toPayload(
-      await ask('Kod z karty (6 cyfr pod QR razem z numerem karty albo treść QR): ', values.kod),
-    );
+    const code = values.kod ? toPayload(values.kod) : await askForCode();
     const client = await rpc('pos_identify', { p_terminal_key: terminalKey, p_code: code });
     console.log(`\nKlient: ${client.first_name}, saldo ${points(client.points_balance)}.`);
     if (!client.can_redeem) console.log('Sam numer karty: nalicza kłoski, bez kuponów i nagród.');
