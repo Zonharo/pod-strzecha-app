@@ -1,6 +1,7 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 
+import { CODE_MAX_LENGTH, CODE_MIN_LENGTH } from '@/application/dto/account';
 import { container } from '@/infrastructure/container';
 import { useNow } from '@/shared/hooks/use-now';
 import { Button } from '@/shared/ui/button';
@@ -31,9 +32,10 @@ export function VerifyCodeScreen() {
   };
 
   const onChange = (value: string) => {
-    const digits = value.replace(/\D/g, '').slice(0, 6);
+    const digits = value.replace(/\D/g, '').slice(0, CODE_MAX_LENGTH);
+    const pasted = digits.length - code.length > 1;
     setCode(digits);
-    if (digits.length === 6) verify(digits);
+    if (pasted && digits.length >= CODE_MIN_LENGTH) verify(digits);
   };
 
   const resend = async () => {
@@ -56,7 +58,7 @@ export function VerifyCodeScreen() {
             title="Zaloguj się"
             onPress={() => verify(code)}
             loading={busy}
-            disabled={code.length !== 6}
+            disabled={code.length < CODE_MIN_LENGTH}
           />
           <Button
             variant="plain"
@@ -69,9 +71,7 @@ export function VerifyCodeScreen() {
       }
     >
       <Text variant="display">Wpisz kod</Text>
-      <Text muted>
-        Wysłaliśmy 6 cyfr na {email}. Jeśli nie widzisz wiadomości, zajrzyj do spamu.
-      </Text>
+      <Text muted>Wysłaliśmy kod na {email}. Jeśli nie widzisz wiadomości, zajrzyj do spamu.</Text>
       <TextField
         label="Kod z e-maila"
         value={code}
@@ -79,9 +79,9 @@ export function VerifyCodeScreen() {
         keyboardType="number-pad"
         textContentType="oneTimeCode"
         autoComplete="one-time-code"
-        maxLength={6}
+        maxLength={CODE_MAX_LENGTH}
         autoFocus
-        style={{ fontSize: 28, letterSpacing: 8, textAlign: 'center' }}
+        style={{ fontSize: 28, letterSpacing: 6, textAlign: 'center' }}
         error={error}
         hint={notice ?? undefined}
       />

@@ -40,7 +40,13 @@ describe('makeVerifyLoginCode', () => {
     expect(auth.verifyCode).toHaveBeenCalledWith('ala@example.com', '123456');
   });
 
-  it.each(['12345', '1234567', 'abcdef', ''])('odrzuca kod %j', async (code) => {
+  it.each(['123456', '12345678', '1234567890'])('przyjmuje kod %j', async (code) => {
+    const auth = fakeAuth();
+    expect((await makeVerifyLoginCode({ auth })({ email: 'ala@example.com', code })).ok).toBe(true);
+    expect(auth.verifyCode).toHaveBeenCalledWith('ala@example.com', code);
+  });
+
+  it.each(['12345', '12345678901', 'abcdef', ''])('odrzuca kod %j', async (code) => {
     const auth = fakeAuth();
     expect(await makeVerifyLoginCode({ auth })({ email: 'ala@example.com', code })).toEqual(
       err('invalid_code'),

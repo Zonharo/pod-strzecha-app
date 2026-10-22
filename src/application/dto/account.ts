@@ -12,12 +12,15 @@ export const emailSchema = z.object({
 
 export type EmailInput = z.input<typeof emailSchema>;
 
+export const CODE_MIN_LENGTH = 6;
+export const CODE_MAX_LENGTH = 10;
+
 export const codeSchema = z.object({
   email: emailSchema.shape.email,
   code: z
     .string()
     .trim()
-    .regex(/^[0-9]{6}$/, { message: 'invalid_code' }),
+    .regex(/^[0-9]{6,10}$/, { message: 'invalid_code' }),
 });
 
 export type CodeInput = z.input<typeof codeSchema>;
