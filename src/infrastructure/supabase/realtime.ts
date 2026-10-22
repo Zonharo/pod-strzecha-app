@@ -1,9 +1,12 @@
 import type { SupabaseClient } from './client';
 
+let sequence = 0;
+
 export const makeRealtime = (supabase: SupabaseClient) => ({
   watchCustomer(userId: string, onChange: () => void): () => void {
+    sequence += 1;
     const channel = supabase
-      .channel(`customer:${userId}`)
+      .channel(`customer:${userId}:${sequence}`)
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'customers', filter: `id=eq.${userId}` },
